@@ -1,0 +1,115 @@
+#This is going to be a blackjack code made on Python
+import numpy as np
+import random
+#Creating a start screen
+def start_screen():
+    print("Welcome to Blackjack!")
+    start=input("If you would to start the game, enter 1, if you would like to view the rules, enter 2, enter any other key to exit: ")
+    return start
+
+#Creating a function to view the rules
+def rules():
+    print("____________________________________________________________________________________________________________________________________")
+    print("| Blackjack is a simple card game where the goal is to get your hand to have a value as close to 21 as possible without going over. |")
+    print("| The game begins with the player and the dealer receiving two cards each. The player can see one of the dealer's cards, but the    |")
+    print("| other card is hidden. Each card dealt has a value: number cards are worth their face value, face cards (Jack, Queen, King) are    |")
+    print("| worth 10, and Aces can be worth either 1 or 11, depending on which value would be more beneficial for the player's hand.          |")
+    print("| If the player wants to try to get closer to 21, they can choose to 'hit', which results in them being dealt another card.         |")
+    print("| If the player is happy with the value of their hand, they can choose to 'stand', which means they will not receive any more       |")
+    print("| cards. After the player stands, the dealer will reveal their hidden card and will continue to hit until their hand has a value    |")
+    print("| of at least 17. If the player's hand exceeds 21, they lose. If the dealer's hand exceeds 21, the player wins. If neither hand     |")
+    print("| exceeds 21, the hand with the higher value wins. If both hands have the same value, it's a tie.                                   |")
+    print("|___________________________________________________________________________________________________________________________________|")
+
+#creating a function to play the game that could be reused if the player wants to play again without having to view the rules again
+def calculate_hand_value(hand):
+    value = 0
+    aces = 0
+    for card in hand:
+        if card.startswith('Ace'):
+            aces += 1
+        elif card.startswith(('Jack', 'Queen', 'King')):
+            value += 10
+        else:
+            value += int(card.split()[0])
+    for _ in range(aces):
+        if value + 11 <= 21:
+            value += 11
+        else:
+            value += 1
+    return value
+
+def play_game():
+    game = True
+    player_bust = False
+    while game == True:
+        suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+        ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+        deck = [f"{rank} of {suit}" for suit in suits for rank in ranks]
+        print("Great! Let's start the game!")
+        random.shuffle(deck)
+        player_hand = [deck.pop(), deck.pop()]
+        dealer_hand = [deck.pop(), deck.pop()]
+        print("Your hand:", player_hand)
+        print("Dealer's hand: [", dealer_hand[0], ", ________]")
+        while True:
+            player_value = calculate_hand_value(player_hand)
+            if player_value == 21:
+                print("Blackjack! You win!\n")
+                break 
+            if player_value > 21:
+                print("Bust! You lose.\n")
+                player_bust = True
+                break
+            action = input("Do you want to 'hit' or 'stand'? ")
+            if action.lower() == 'hit':
+                player_hand.append(deck.pop())
+                print("Your hand:", player_hand)
+            elif action.lower() == 'stand':
+                break
+            else:
+                print("Invalid input. Please enter 'hit' or 'stand'.")
+        if player_bust == False and player_value != 21:
+            print("Dealer's hand:", dealer_hand)
+            while calculate_hand_value(dealer_hand) < 17:
+                dealer_hand.append(deck.pop())
+                print("Dealer's hand:", dealer_hand)
+            dealer_value = calculate_hand_value(dealer_hand)
+            if dealer_value > 21:
+                print("Dealer busts! You win!\n")
+            elif dealer_value > player_value:
+                print("Dealer wins!\n")
+            elif dealer_value < player_value:
+                print("You win!\n")
+            else:
+                print("It's a tie!")
+            game = continue_game(game)
+        if player_bust == True:
+            game = continue_game(game)
+
+def continue_game(game):
+    while True:
+        continue_game = input("Would you like to play again? (enter 1 to continue, any other input will exit): ")
+        try:
+            continue_game = int(continue_game)
+            if continue_game == 1:
+                game = True
+                return game
+            else:
+                game = False
+                return game
+        except ValueError:
+            game = False
+            return game
+
+
+start = start_screen()
+if start == "2":
+    rules()
+    start = input("If you would like to start the game, enter 1. Otherwise enter any other key to exit: ")
+
+if start == "1":
+    play_game()
+    
+else:
+    print("Thank you for visiting! Goodbye!")
