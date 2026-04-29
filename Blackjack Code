@@ -46,12 +46,12 @@ def play_game():
         suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
         ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
         deck = [f"{rank} of {suit}" for suit in suits for rank in ranks]
-        print("Great! Let's start the game!")
+        print("\nGreat! Let's start the game!\n\n")
         random.shuffle(deck)
         player_hand = [deck.pop(), deck.pop()]
         dealer_hand = [deck.pop(), deck.pop()]
         print("Your hand:", player_hand)
-        print("Dealer's hand: [", dealer_hand[0], ", ________]")
+        print("\nDealer's hand: [", dealer_hand[0], ", ________]\n")
         while True:
             player_value = calculate_hand_value(player_hand)
             if player_value == 21:
@@ -64,16 +64,16 @@ def play_game():
             action = input("Do you want to 'hit' or 'stand'? ")
             if action.lower() == 'hit':
                 player_hand.append(deck.pop())
-                print("Your hand:", player_hand)
+                print("\nYour hand:", player_hand)
             elif action.lower() == 'stand':
                 break
             else:
                 print("Invalid input. Please enter 'hit' or 'stand'.")
         if player_bust == False and player_value != 21:
-            print("Dealer's hand:", dealer_hand)
+            print("\nDealer's hand:", dealer_hand)
             while calculate_hand_value(dealer_hand) < 17:
                 dealer_hand.append(deck.pop())
-                print("Dealer's hand:", dealer_hand)
+                print("\nDealer's hand:", dealer_hand)
             dealer_value = calculate_hand_value(dealer_hand)
             if dealer_value > 21:
                 print("Dealer busts! You win!\n")
@@ -82,7 +82,7 @@ def play_game():
             elif dealer_value < player_value:
                 print("You win!\n")
             else:
-                print("It's a tie!")
+                print("It's a tie!\n")
             game = continue_game(game)
         if player_bust == True:
             game = continue_game(game)
