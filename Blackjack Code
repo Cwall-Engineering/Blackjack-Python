@@ -1,6 +1,9 @@
 #This is going to be a blackjack code made on Python
 import numpy as np
 import random
+import os
+def clear_console():
+    os.system('cls' if os.name == 'nt' else 'clear')
 #Creating a start screen
 def start_screen():
     print("Welcome to Blackjack!")
@@ -50,9 +53,10 @@ def play_game():
         random.shuffle(deck)
         player_hand = [deck.pop(), deck.pop()]
         dealer_hand = [deck.pop(), deck.pop()]
-        print("Your hand:", player_hand)
+        print("Your hand:", player_hand, "total value:", calculate_hand_value(player_hand))
         print("\nDealer's hand: [", dealer_hand[0], ", ________]\n")
         while True:
+            player_bust = False
             player_value = calculate_hand_value(player_hand)
             if player_value == 21:
                 print("Blackjack! You win!\n")
@@ -64,16 +68,16 @@ def play_game():
             action = input("Do you want to 'hit' or 'stand'? ")
             if action.lower() == 'hit':
                 player_hand.append(deck.pop())
-                print("\nYour hand:", player_hand)
+                print("\nYour hand:", player_hand, "total value:", calculate_hand_value(player_hand))
             elif action.lower() == 'stand':
                 break
             else:
                 print("Invalid input. Please enter 'hit' or 'stand'.")
         if player_bust == False and player_value != 21:
-            print("\nDealer's hand:", dealer_hand)
+            print("\nDealer's hand:", dealer_hand, "total value:", calculate_hand_value(dealer_hand))
             while calculate_hand_value(dealer_hand) < 17:
                 dealer_hand.append(deck.pop())
-                print("\nDealer's hand:", dealer_hand)
+                print("\nDealer's hand:", dealer_hand, "total value:", calculate_hand_value(dealer_hand))
             dealer_value = calculate_hand_value(dealer_hand)
             if dealer_value > 21:
                 print("Dealer busts! You win!\n")
@@ -86,11 +90,13 @@ def play_game():
             game = continue_game(game)
         if player_bust == True:
             game = continue_game(game)
-
+        if player_value == 21:
+            game = continue_game(game)
 def continue_game(game):
     while True:
         continue_game = input("Would you like to play again? (enter 1 to continue, any other input will exit): ")
         try:
+            clear_console()
             continue_game = int(continue_game)
             if continue_game == 1:
                 game = True
